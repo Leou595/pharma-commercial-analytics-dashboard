@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commercial Performance Executive Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          boxShadow: {
+            soft: '0 8px 30px rgba(9, 30, 66, 0.08)',
+            deep: '0 14px 40px rgba(5, 17, 44, 0.22)'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="./styles/custom.css" />
+</head>
+<body class="app-bg text-slate-800 dark:text-slate-100 min-h-screen">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pb-12">
+    <header class="pt-7 md:pt-10 pb-4 md:pb-6 border-b border-slate-200/80 dark:border-slate-700/70 reveal">
+      <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Biopharma Commercial Analytics</p>
+          <h1 class="mt-2 text-2xl md:text-4xl font-semibold leading-tight title-font">Commercial Performance Executive Dashboard</h1>
+          <p class="mt-3 max-w-3xl text-sm md:text-base text-slate-600 dark:text-slate-300">
+            An anonymized monthly business performance demo showcasing KPI management, segmentation logic, and cross-functional commercial insighting.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 self-start">
+          <button id="themeToggle" class="btn-control" type="button" aria-label="Toggle theme">Theme</button>
+          <button id="resetFilters" class="btn-control" type="button">Reset Filters</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="mt-6 card p-4 md:p-5 reveal">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3" id="filterBar"></div>
+      <div class="mt-3 flex flex-wrap items-center gap-2" id="activeChips"></div>
+    </section>
+
+    <section class="mt-6 reveal">
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-4" id="kpiCards"></div>
+      <div class="mt-4 card p-4 md:p-5">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h2 class="text-sm uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">Pacing Signal</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1" id="pacingNarrative"></p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-32 h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div id="timeProgressBar" class="h-full bg-slate-400 transition-all duration-500"></div>
+            </div>
+            <div class="w-32 h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div id="attainProgressBar" class="h-full transition-all duration-500"></div>
+            </div>
+            <span id="trafficLight" class="badge-status">On Track</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4 reveal">
+      <div class="card p-4 md:p-5 xl:col-span-2">
+        <h3 class="section-title">Time Trend</h3>
+        <div id="trendChart" class="chart-lg"></div>
+      </div>
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Province Ranking</h3>
+        <div id="regionalRankChart" class="chart-lg"></div>
+      </div>
+    </section>
+
+    <section class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4 reveal">
+      <div class="card p-4 md:p-5 xl:col-span-2 bubble-panel">
+        <h3 class="section-title">Province Performance Bubble</h3>
+        <p class="section-sub">X: Pacing gap vs target | Y: Monthly growth | Size: Contribution share</p>
+        <div id="regionalBubbleChart" class="chart-xl"></div>
+      </div>
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Province Insight</h3>
+        <ul id="regionalInsights" class="space-y-3 text-sm text-slate-600 dark:text-slate-300"></ul>
+      </div>
+    </section>
+
+    <section class="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-4 reveal">
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Dosage Form Mix</h3>
+        <div id="dosageMixChart" class="chart-md"></div>
+      </div>
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Dosage Trend and Attainment</h3>
+        <div id="dosageTrendChart" class="chart-md"></div>
+      </div>
+    </section>
+
+    <section class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4 reveal">
+      <div class="card p-4 md:p-5 xl:col-span-2">
+        <h3 class="section-title">Sales Team Productivity by Province</h3>
+        <div id="squadProdChart" class="chart-lg"></div>
+      </div>
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Hospital Coverage by Squad</h3>
+        <div id="squadCoverageChart" class="chart-lg"></div>
+      </div>
+      <div class="card p-4 md:p-5 xl:col-span-3">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="squadKpiCards"></div>
+      </div>
+    </section>
+
+    <section class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4 reveal">
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Hospital Tier Count</h3>
+        <div id="tierCountCards" class="grid grid-cols-1 gap-2"></div>
+      </div>
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Quarterly Contribution by Tier</h3>
+        <div id="tierContributionChart" class="chart-md"></div>
+      </div>
+      <div class="card p-4 md:p-5">
+        <h3 class="section-title">Completion and Growth by Tier</h3>
+        <div id="tierCompletionChart" class="chart-md"></div>
+      </div>
+    </section>
+
+    <section class="mt-6 reveal">
+      <details class="card p-4 md:p-5 group" open>
+        <summary class="cursor-pointer list-none flex items-center justify-between">
+          <h3 class="section-title">Top 10 Monthly Growth Hospitals</h3>
+          <span class="text-xs text-slate-500 dark:text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="overflow-x-auto mt-4">
+          <table class="w-full min-w-[900px] text-sm" id="hospitalTable">
+            <thead>
+              <tr id="hospitalTableHead"></tr>
+            </thead>
+            <tbody id="hospitalTableBody"></tbody>
+          </table>
+        </div>
+        <div id="hospitalDrawer" class="mt-4 hidden"></div>
+      </details>
+    </section>
+
+    <section class="mt-6 reveal">
+      <details class="card p-4 md:p-5 group">
+        <summary class="cursor-pointer list-none flex items-center justify-between">
+          <h3 class="section-title">Underperforming and Alert Insights</h3>
+          <span class="text-xs text-slate-500 dark:text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div id="alertCards" class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3"></div>
+      </details>
+    </section>
+
+    <footer class="mt-10 border-t border-slate-200/80 dark:border-slate-700/70 pt-5 text-sm text-slate-600 dark:text-slate-300 reveal">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <div>Author: Leou Jia</div>
+        <div>
+          LinkedIn:
+          <a class="text-blue-600 dark:text-blue-300 hover:underline" href="https://www.linkedin.com/in/zhenjie-leou-jia/" target="_blank" rel="noreferrer">
+            linkedin.com/in/zhenjie-leou-jia
+          </a>
+        </div>
+        <div id="copyright"></div>
+      </div>
+      <div class="mt-3 text-xs text-slate-500 dark:text-slate-400 footer-note">All data presented in this dashboard has been anonymized and is provided for illustrative reference purposes only.</div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
+  <script src="./data/dashboardData.js"></script>
+  <script src="./js/state.js"></script>
+  <script src="./js/charts.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
